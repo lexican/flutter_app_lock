@@ -11,7 +11,7 @@ class AppLock extends StatefulWidget {
     super.key,
     required this.builder,
     this.enabled = true,
-    this.lockDurationSeconds = 10,
+    this.lockDurationSeconds = 60,
   });
 
   static AppLockState? of(BuildContext context) =>
@@ -72,6 +72,8 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
           _isLocked = true;
           _showLockScreen();
         }
+      } else {
+        _dateTimeBeforeAppWasInactive = null;
       }
     }
   }
