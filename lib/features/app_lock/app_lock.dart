@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app_lock/features/lock/lock.dart';
 
 class AppLock extends StatefulWidget {
   final Widget Function(Object?) builder;
@@ -10,7 +11,7 @@ class AppLock extends StatefulWidget {
     super.key,
     required this.builder,
     this.enabled = true,
-    this.lockDurationSeconds = 60,
+    this.lockDurationSeconds = 10,
   });
 
   static AppLockState? of(BuildContext context) =>
@@ -116,7 +117,7 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
 
   Widget get _lockScreen {
     return WillPopScope(
-      child: const SizedBox(),
+      child: const Lock(),
       onWillPop: () => Future.value(false),
     );
   }
