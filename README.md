@@ -1,16 +1,30 @@
-# flutter_app_lock
+# Flutter App Lock
 
-Flutter in-app lock
+A Flutter app that implements showing a lock screen when an app is opened or paused.
 
-## Getting Started
+If a user is launching the app or opening the app for the first time, a lock screen is shown.
 
-This project is a starting point for a Flutter application.
+If a user returns to the app after it has been launched, a lock screen is shown if the time the app spent in the background exceeds the lock duration.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Screenshots
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Home and Passcode Screen
+
+<img src="screenshots/home.png" height="500em" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="screenshots/passcode.png" height="500em" />
+
+
+## ✨ Requirements
+
+- Any Operating System (ie. MacOS X, Linux, Windows)
+- Any IDE with Flutter SDK installed (ie. Android Studio, VSCode, IntelliJ, etc)
+- A little knowledge of Dart and Flutter
+
+## Run Locally
+
+```bash
+  git clone https://github.com/lexican/flutter_app_lock.git
+  cd flutter_app_lock
+  flutter pub get
+  flutter run
+```
