@@ -15,7 +15,7 @@ class _AppState extends State<App> {
     return AppLock(
       builder: (args) {
         return MaterialApp(
-          title: 'Flutter Demo',
+          title: 'Flutter App Lock',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             primarySwatch: Colors.blue,
