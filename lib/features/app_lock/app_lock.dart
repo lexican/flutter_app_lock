@@ -6,12 +6,12 @@ import 'package:flutter_app_lock/features/lock/lock.dart';
 class AppLock extends StatefulWidget {
   final Widget Function(Object?) builder;
   final bool enabled;
-  final int lockDurationSeconds;
+  final Duration backgroundLockLatency;
   const AppLock({
     super.key,
     required this.builder,
     this.enabled = true,
-    this.lockDurationSeconds = 60,
+    this.backgroundLockLatency = const Duration(seconds: 60),
   });
 
   static AppLockState? of(BuildContext context) =>
@@ -26,10 +26,8 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
   late bool _enabled;
   late bool _didUnlockForAppLaunch;
   late bool _isLocked;
-  late int _lockDurationSeconds;
 
-  DateTime? _dateTimeBeforeAppWasInactive;
-  bool _isInactive = false;
+  Timer? _backgroundLockLatencyTimer;
 
   @override
   void initState() {
@@ -37,7 +35,6 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
     _didUnlockForAppLaunch = true;
     _isLocked = false;
     _enabled = widget.enabled;
-    _lockDurationSeconds = widget.lockDurationSeconds;
     super.initState();
   }
 
@@ -45,6 +42,7 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
   void dispose() {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    _backgroundLockLatencyTimer?.cancel();
     super.initState();
   }
 
@@ -53,28 +51,13 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
     if (!_enabled) {
       return;
     }
-    if (state == AppLifecycleState.resumed) {
-      _showLock();
-    } else if (state == AppLifecycleState.inactive) {
-      if (!_isInactive) {
-        _isInactive = true;
-        _dateTimeBeforeAppWasInactive = DateTime.now();
-      }
+    if (state == AppLifecycleState.paused && !_isLocked) {
+      _backgroundLockLatencyTimer =
+          Timer(widget.backgroundLockLatency, () => _showLockScreen());
     }
-  }
 
-  void _showLock() async {
-    if (_dateTimeBeforeAppWasInactive != null) {
-      var difference =
-          DateTime.now().difference(_dateTimeBeforeAppWasInactive!);
-      if (difference.inSeconds >= _lockDurationSeconds) {
-        if (!_isLocked) {
-          _isLocked = true;
-          _showLockScreen();
-        }
-      } else {
-        _dateTimeBeforeAppWasInactive = null;
-      }
+    if (state == AppLifecycleState.resumed) {
+      _backgroundLockLatencyTimer?.cancel();
     }
   }
 
@@ -98,8 +81,6 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
 
   void _didUnlockOnAppPaused(Object? args) {
     _isLocked = false;
-    _isInactive = false;
-    _dateTimeBeforeAppWasInactive = null;
     _navigatorKey.currentState!.pop(args);
   }
 
