@@ -1,17 +1,30 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app_lock/features/lock/lock.dart';
+
+/// A widget that uses app lifecycle events for displaying or hiding a lock screen.
+/// This Widget should be wrapped around `MyApp` widget (or something similar).
+
+/// [builder] is a function that takes in an [Object] as its argument and should return a [Widget]. Calling `AppLock.of(context).didUnlock();` provides the argument [Object].
+
+/// [enabled] determines if the [lockScreen] should be displayed or hidden on app launch and subsequent app pauses.
+/// The enabled value can be changed by calling any of the following methods.  `AppLock.of(context).enable();` enables the app lock, `AppLock.of(context).disable();` disables the app lock or `AppLock.of(context).setEnabled(bool);` sets the app lock based on the passed boolean value.
+
+/// [lockDurationSeconds] determines how long the app is allowed to spend in the background before the lock screen is displayed. This defaults to 60 seconds (one minute).
+
+/// [lockScreen] is a [widget] that handles authentication and should call `AppLock.of(context).didUnlock();` after a successful authentication.
 
 class AppLock extends StatefulWidget {
   final Widget Function(Object?) builder;
   final bool enabled;
   final int lockDurationSeconds;
+  final Widget lockScreen;
   const AppLock({
     super.key,
     required this.builder,
     this.enabled = true,
     this.lockDurationSeconds = 60,
+    required this.lockScreen,
   });
 
   static AppLockState? of(BuildContext context) =>
@@ -82,6 +95,8 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
     return _navigatorKey.currentState!.pushNamed<Object?>('/lock-screen');
   }
 
+  /// If the app is currently running, 'AppLock' will pop the [lockScreen],
+  /// otherwise it will create the widget returned by the [builder] function.
   void didUnlock(Object? args) {
     if (_didUnlockForAppLaunch) {
       _didUnlockOnAppLaunch(true);
@@ -103,6 +118,7 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
     _navigatorKey.currentState!.pop(args);
   }
 
+  /// If [enabled] is true, [AppLock] displays the [lockScreen] on subsequent app pauses; otherwise, [AppLock] does not display it on subsequent app pauses.
   void setEnabled(bool enabled) {
     if (enabled) {
       enable();
@@ -111,12 +127,14 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
     }
   }
 
+  ///Ensures that the [AppLock] displays the [lockScreen] on consecutive app pauses.
   void enable() {
     setState(() {
       _enabled = true;
     });
   }
 
+  ///Ensures that the [AppLock] doesn't display the [lockScreen] on consecutive app pauses.
   void disable() {
     setState(() {
       _enabled = false;
@@ -139,7 +157,7 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
 
   Widget get _lockScreen {
     return WillPopScope(
-      child: const Lock(),
+      child: widget.lockScreen,
       onWillPop: () => Future.value(false),
     );
   }
