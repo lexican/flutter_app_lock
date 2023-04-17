@@ -34,7 +34,7 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    _didUnlockForAppLaunch = true;
+    _didUnlockForAppLaunch = !widget.enabled;
     _isLocked = false;
     _enabled = widget.enabled;
     _lockDurationSeconds = widget.lockDurationSeconds;
@@ -101,6 +101,26 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
     _isInactive = false;
     _dateTimeBeforeAppWasInactive = null;
     _navigatorKey.currentState!.pop(args);
+  }
+
+  void setEnabled(bool enabled) {
+    if (enabled) {
+      enable();
+    } else {
+      disable();
+    }
+  }
+
+  void enable() {
+    setState(() {
+      _enabled = true;
+    });
+  }
+
+  void disable() {
+    setState(() {
+      _enabled = false;
+    });
   }
 
   @override

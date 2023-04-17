@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_lock/features/app_lock/app_lock.dart';
 import 'package:lottie/lottie.dart';
 
 class Home extends StatefulWidget {
@@ -9,6 +10,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      AppLock.of(context)?.enable();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
