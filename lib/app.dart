@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_lock/features/app_lock/app_lock.dart';
 import 'package:flutter_app_lock/features/home/home.dart';
+import 'package:flutter_app_lock/features/lock/lock.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -25,7 +26,8 @@ class _AppState extends State<App> {
           },
         );
       },
-      enabled: true,
+      enabled: false,
+      lockScreen: const Lock(),
     );
   }
 }
