@@ -19,12 +19,14 @@ class AppLock extends StatefulWidget {
   final bool enabled;
   final int lockDurationSeconds;
   final Widget lockScreen;
+  final ThemeData? theme;
   const AppLock({
     super.key,
     required this.builder,
+    required this.lockScreen,
     this.enabled = true,
     this.lockDurationSeconds = 60,
-    required this.lockScreen,
+    this.theme,
   });
 
   static AppLockState? of(BuildContext context) =>
@@ -147,6 +149,7 @@ class AppLockState extends State<AppLock> with WidgetsBindingObserver {
       debugShowCheckedModeBanner: false,
       home: widget.enabled ? _lockScreen : widget.builder(null),
       navigatorKey: _navigatorKey,
+      theme: widget.theme,
       routes: <String, WidgetBuilder>{
         '/lock-screen': (context) => _lockScreen,
         '/unlocked': (context) =>
